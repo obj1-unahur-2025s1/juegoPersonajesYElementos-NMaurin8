@@ -1,9 +1,118 @@
-import example.pepita
+import personajes.*
+import elementos.*
+import armas.*
+import jugador.*
+describe "floki y sus armas"{
+  test "floki ataca el castillo con la jabalina y su defensa se reduce a 120"{
+    floki.arma(jabalina)
+    floki.encontrar(castillo)
+    assert.equals(120, castillo.defensa() )
+  }
 
-describe "group of tests for pepita" {
+  test "aurora muere si floki la ataca con una jabalina"{
+    floki.arma(jabalina)
+    floki.encontrar(aurora)
+    assert.notThat(aurora.estaViva())
+  }
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  test "aurora sobrevive si floki la ataca con una ballesta"{
+    floki.arma(ballesta)
+    floki.encontrar(aurora)
+    assert.that(aurora.estaViva())
+  }
+
+  test "la ballesta esta descargada cuando es utilizada 10 veces"{
+    floki.arma(ballesta)
+    floki.encontrar(tipa)
+    floki.encontrar(tipa)
+    floki.encontrar(tipa)
+    floki.encontrar(tipa)
+    floki.encontrar(tipa)
+    floki.encontrar(tipa)
+    floki.encontrar(tipa)
+    floki.encontrar(tipa)
+    floki.encontrar(tipa)
+    floki.encontrar(tipa)
+    assert.notThat(ballesta.estaCargada())
+  }
+
+  test "la jabalina deja de estar cargada luego de usarse."{
+    floki.arma(jabalina)
+    floki.encontrar(castillo)
+    assert.notThat(jabalina.estaCargada())
+  }
+
+  test "un arma descargada no ataca, y por lo tanto, el elemento no cambia su estado."{
+    floki.arma(jabalina)
+    floki.encontrar(tipa)
+    assert.notThat(jabalina.estaCargada())
+    floki.encontrar(aurora)
+    assert.that(aurora.estaViva())
+  }
+
+}
+
+describe "Mario y el trabajo"{
+  test "mario recolecta 15 de valor al encontrarse con aurora"{
+    mario.encontrar(aurora)
+    assert.equals(15, mario.valorRecolectado())
+  }
+
+  test "el castillo incrementa su defensa en 20 cuando mario trabaja sobre el, sin superar su tope de 200"{
+    mario.encontrar(castillo)
+    assert.that(castillo.defensa() == 170)
+    mario.encontrar(castillo)
+    mario.encontrar(castillo)
+    mario.encontrar(castillo)
+    assert.equals(200, castillo.defensa())
+  }
+
+  test "tipa crece 1 metro al recibir trabajo de mario"{
+    mario.encontrar(tipa)
+    assert.equals(9, tipa.altura())
+  }
+
+  test "el valor recolectado por mario con tipa es el doble de su altura luego de haber crecido."{
+    mario.encontrar(tipa)
+    assert.equals(tipa.altura()*2, mario.valorRecolectado())
+  }
+
+  test "mario es feliz si recolecta al menos 50 unidades de valor."{
+    mario.encontrar(castillo)
+    mario.encontrar(castillo)
+    assert.that(mario.valorRecolectado() > 50 and mario.esFeliz())
+  }
+
+  test "Verificar que mario es feliz si el último elemento con el que interactuó tiene al menos 10 metros de altura."{
+    mario.encontrar(tipa)
+    mario.encontrar(tipa)
+    assert.that(mario.esFeliz())
+  }
+
+  test "mario no es feliz si no cumple ninguna de sus dos condiciones."{
+    mario.encontrar(aurora)
+    assert.notThat(mario.esFeliz())
+  }
+}
+
+describe "Luisa la jugadora"{
+  test "luisa puede asignar un personaje activo correctamente."{
+    luisa.personaje(mario)
+    assert.that(luisa.personaje() != null)
+  }
+
+  test "luisa asigna como personaje a mario y repara el castillo"{
+    luisa.personaje(mario)
+    luisa.aparece(castillo)
+    assert.equals(170, castillo.defensa())
+  }
+
+  test "luisa asigna como personaje a floki con su jabalina y mata a aurora"{
+    luisa.personaje(floki)
+    floki.arma(jabalina)
+    luisa.aparece(aurora)
+    assert.notThat(aurora.estaViva())
+
   }
 
 }
